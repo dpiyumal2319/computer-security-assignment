@@ -2,23 +2,18 @@
 #include <string.h>
 
 void vulnerable_function(char* input_string) {
-    // 'buffer' is a 16-byte array allocated on the stack.
-    char buffer[16];
+    char buffer[16];  // Stack buffer for 16 bytes
 
-    // VULNERABILITY: strcpy() copies all bytes from 'input_string'
-    // into 'buffer' until it hits a null terminator.
-    // It does NOT check if 'input_string' is longer than 16 bytes.
+    // VULNERABILITY: strcpy has no bounds checking
+    // Input longer than 16 bytes will overflow the buffer
     strcpy(buffer, input_string);
-    // If input_string is "AAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    // it will overflow 'buffer' and overwrite adjacent stack data.
 
     printf("Buffer content: %s\n", buffer);
 }
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
-        // A malicious input string can be passed via command line.
-        vulnerable_function(argv[1]);
+        vulnerable_function(argv[1]);  // Pass user input directly
     }
     return 0;
 }
